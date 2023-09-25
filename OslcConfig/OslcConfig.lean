@@ -1,8 +1,7 @@
-import Mathlib
 
 -- Basic RDF modeling
 structure URI := 
-(value : string)
+(value : String)
 
 inductive Predicate : Type
 | name
