@@ -23,15 +23,16 @@ inductive RdfValueType : Type
 | rdf_boolean
 
 inductive RdfRepresentation : Type
-| Either
-| NotApplicable
+| Reference
+| Inline
+| EitherReferenceOrInline
 
 -- Define a structure to represent a Property Shape:
 structure PropertyShape :=
 (occurs : Option (List RdfValueType))
 (readOnly : Option Bool)
 (valueType : RdfValueType)
-(representation : RdfRepresentation)
+(representation : Option RdfRepresentation)
 (range : List URI)
 
 -- Define the specific shapes:
@@ -40,7 +41,7 @@ def dcterms_contributor_shape : PropertyShape :=
     occurs := none, -- implying Zero-or-many
     readOnly := none, -- unspecified
     valueType := RdfValueType.AnyResource,
-    representation := RdfRepresentation.Either,
+    representation := some RdfRepresentation.EitherReferenceOrInline,
     range := [{value := ("foaf:Agent" : String)}, {value := ("foaf:Person" : String)}]
 }
 
@@ -50,7 +51,7 @@ def dcterms_created_shape : PropertyShape :=
     occurs := some [], -- implying Zero-or-one
     readOnly := some true, -- true
     valueType := RdfValueType.dateTime,
-    representation := RdfRepresentation.NotApplicable,
+    representation := none,
     range := [] -- Unspecified range
 }
 
@@ -59,6 +60,6 @@ def dcterms_creator_shape : PropertyShape :=
     occurs := none, -- implying Zero-or-many
     readOnly := some true, -- true
     valueType := RdfValueType.AnyResource,
-    representation := RdfRepresentation.Either,
+    representation := RdfRepresentation.EitherReferenceOrInline,
     range := [{value := "foaf:Agent"}, {value := "foaf:Person"}]
 }
