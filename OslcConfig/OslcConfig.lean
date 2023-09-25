@@ -29,7 +29,6 @@ inductive RdfRepresentation : Type
 
 -- Define a structure to represent a Property Shape:
 structure PropertyShape :=
-(occurs : Option (List RdfValueType))
 (readOnly : Option Bool)
 (valueType : RdfValueType)
 (representation : Option RdfRepresentation)
@@ -38,7 +37,6 @@ structure PropertyShape :=
 -- Define the specific shapes:
 def dcterms_contributor_shape : PropertyShape :=
 {
-    occurs := none, -- implying Zero-or-many
     readOnly := none, -- unspecified
     valueType := RdfValueType.AnyResource,
     representation := some RdfRepresentation.EitherReferenceOrInline,
@@ -48,7 +46,6 @@ def dcterms_contributor_shape : PropertyShape :=
 
 def dcterms_created_shape : PropertyShape :=
 {
-    occurs := some [], -- implying Zero-or-one
     readOnly := some true, -- true
     valueType := RdfValueType.dateTime,
     representation := none,
@@ -57,7 +54,6 @@ def dcterms_created_shape : PropertyShape :=
 
 def dcterms_creator_shape : PropertyShape :=
 {
-    occurs := none, -- implying Zero-or-many
     readOnly := some true, -- true
     valueType := RdfValueType.AnyResource,
     representation := RdfRepresentation.EitherReferenceOrInline,
