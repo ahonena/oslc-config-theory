@@ -1,61 +1,44 @@
+import Mathlib.Init.Set
 
--- Basic RDF modeling
-structure URI := 
+structure IRI :=
 (value : String)
 
-inductive Predicate : Type
-| name
-| age
+structure RdfLiteral :=
+(value : String)
+
+inductive Blank : Type
+| mk
+
+
+inductive RdfSubject : Type
+| uri : IRI → RdfSubject
+| blank : Blank → RdfSubject 
+
+
+inductive RdfObject : Type
+| uri : IRI → RdfObject
+| blank : Blank → RdfObject 
+| literal : RdfLiteral → RdfObject
+
+inductive RdfPredicate : Type
+| rdf_type
+| rdf_class
 | friend
--- ... other predicates as needed
 
-structure Triple :=
-(subj : URI)
-(pred : Predicate)
-(obj : URI) -- this is simplified; objects can also be literals or other types
+structure RdfTriple :=
+(subj : RdfSubject)
+(pred : RdfPredicate)
+(obj : RdfObject) 
 
--- Basic Types for RDF values
-inductive RdfValueType : Type
-| AnyResource
-| dateTime
-| XMLLiteral
-| rdf_string
-| rdf_boolean
-
-inductive RdfRepresentation : Type
-| Reference
-| Inline
-| EitherReferenceOrInline
-
--- Define a structure to represent a Property Shape:
-structure PropertyShape :=
-(readOnly : Option Bool)
-(valueType : RdfValueType)
-(representation : Option RdfRepresentation)
-(range : List URI)
-
--- Define the specific shapes:
-def dcterms_contributor_shape : PropertyShape :=
-{
-    readOnly := none, -- unspecified
-    valueType := RdfValueType.AnyResource,
-    representation := some RdfRepresentation.EitherReferenceOrInline,
-    range := [{value := ("foaf:Agent" : String)}, {value := ("foaf:Person" : String)}]
-}
+-- Define the predicate function
+def hasNonBlankSubject (t: RdfTriple) : Prop :=
+match t.subj with
+| RdfSubject.blank _ => false
+| _ => true
 
 
-def dcterms_created_shape : PropertyShape :=
-{
-    readOnly := some true, -- true
-    valueType := RdfValueType.dateTime,
-    representation := none,
-    range := [] -- Unspecified range
-}
+-- Abstract set of all triples (simply the type itself)
+def allTriples : Set RdfTriple := Set.univ
 
-def dcterms_creator_shape : PropertyShape :=
-{
-    readOnly := some true, -- true
-    valueType := RdfValueType.AnyResource,
-    representation := RdfRepresentation.EitherReferenceOrInline,
-    range := [{value := "foaf:Agent"}, {value := "foaf:Person"}]
-}
+-- Define the subset
+def nonBlankSubjectTriples : Set RdfTriple := {t | hasNonBlankSubject t}
