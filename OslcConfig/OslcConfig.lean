@@ -9,7 +9,6 @@ structure RdfLiteral :=
 inductive Blank : Type
 | mk
 
-
 inductive RdfSubject : Type
 | uri : IRI → RdfSubject
 | blank : Blank → RdfSubject 
@@ -23,13 +22,17 @@ inductive RdfObject : Type
 inductive RdfPredicate : Type
 | rdf_type
 | rdf_class
-| friend
+| rdf_friend
 
 structure RdfTriple :=
 (subj : RdfSubject)
 (pred : RdfPredicate)
 (obj : RdfObject) 
 
+structure VersionResource :=
+(VersionofConceptResourceId : string)
+
+-- Just for learning how to define more abstract collections, like sets
 -- Define the predicate function
 def hasNonBlankSubject (t: RdfTriple) : Prop :=
 match t.subj with
