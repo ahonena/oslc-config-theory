@@ -30,7 +30,21 @@ structure RdfTriple :=
 (obj : RdfObject) 
 
 structure VersionResource :=
-(VersionofConceptResourceId : string)
+(VersionofConceptResourceIRI : string)
+
+def versionResourceToSubject (v: VersionResource) : RdfSubject :=
+RdfSubject.uri { value := v.VersionofConceptResourceIRI }
+
+def oslc_config_VersionResource : IRI := { value := "oslc_config:VersionResource" }
+
+def versionResourceTypeTriple (v: VersionResource) : RdfTriple :=
+{
+  subj := versionResourceToSubject v,
+  pred := RdfPredicate.rdf_type,
+  obj  := RdfObject.uri oslc_config_VersionResource
+}
+inductive ConceptResource : Type
+| iri : IRI → ConceptResource 
 
 -- Just for learning how to define more abstract collections, like sets
 -- Define the predicate function
