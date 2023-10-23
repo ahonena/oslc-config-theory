@@ -36,8 +36,11 @@ Professor, (ProfessorA, ProfessorB) = EnumSort('Professor', ['ProfessorA', 'Prof
 Course, (CourseX, CourseY, CourseZ) = EnumSort('Course', ['CourseX', 'CourseY', 'CourseZ'], ctx)
 
 # Define the schedule as separate functions
+# DaySchedule maps Courses to Days, i.e. tells what day the course is
 DaySchedule = Function('DaySchedule', Course, Day)
+# RoomSchedule tells what room the course is
 RoomSchedule = Function('RoomSchedule', Course, Room)
+# ProfessorSchedule tells which professor teaches the course
 ProfessorSchedule = Function('ProfessorSchedule', Course, Professor)
 
 # Create the solver in the new context
