@@ -6,6 +6,7 @@ def print_consistency_analysis_result(s, case):
         print(case + " is consistent")
     else:
         print("Unsatisfiable theory: " + case)
+        print("Unsat core: ", s.unsat_core())
 
 # Define Configuration datatype
 Configuration = Datatype('Configuration')
@@ -42,22 +43,14 @@ A = Const('A', SetSort(IntSort()))
 e = Int('e')
 
 s = Solver()
-s.add(IsMember(e, A), Not(IsMember(e, A)))
+s.set(unsat_core=True)
 
+# Adding assertions with tracking predicates
+p1 = Bool('p1')
+p2 = Bool('p2')
+s.assert_and_track(IsMember(e, A), p1)
+s.assert_and_track(Not(IsMember(e, A)), p2)
+
+result = s.check()
 print_consistency_analysis_result(s, "self-exclusion")
 
-B = Const('B', SetSort(IntSort()))
-C = Const('C', SetSort(IntSort()))
-
-s = Solver()
-s.add(IsSubset(A, B), IsSubset(B, C), Not(IsSubset(A, C)))
-
-
-print_consistency_analysis_result(s, "transitivity violation")
-
-C = Const('C', SetSort(IntSort()))
-
-s = Solver()
-s.add(Or(IsMember(e, A), IsMember(e, B)), IsMember(e, C), Not(IsMember(e, C)))
-
-print_consistency_analysis_result(s, "impossible union")
