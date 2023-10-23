@@ -1,5 +1,11 @@
 from z3 import *
 
+def print_consistency_analysis_result(s, case):
+    print("Case being checked: " + case)
+    if(s.check() == sat):
+        print(case + " is consistent")
+    else:
+        print("Unsatisfiable theory: " + case)
 
 # Define Configuration datatype
 Configuration = Datatype('Configuration')
@@ -28,9 +34,30 @@ c = Configuration.config(EmptySet(IntSort()))
 s = Solver()
 s.add(is_non_empty(s, ContributionsInConfig(c)))
 
-if s.check() == sat:
-    print("Model is consistent")
-    m = s.model()
+print_consistency_analysis_result(s, "First example")
 
-else:
-    print("Unsatisfiable")
+# %% Examples of finding inconsistencies
+
+A = Const('A', SetSort(IntSort()))
+e = Int('e')
+
+s = Solver()
+s.add(IsMember(e, A), Not(IsMember(e, A)))
+
+print_consistency_analysis_result(s, "self-exclusion")
+
+B = Const('B', SetSort(IntSort()))
+C = Const('C', SetSort(IntSort()))
+
+s = Solver()
+s.add(IsSubset(A, B), IsSubset(B, C), Not(IsSubset(A, C)))
+
+
+print_consistency_analysis_result(s, "transitivity violation")
+
+C = Const('C', SetSort(IntSort()))
+
+s = Solver()
+s.add(Or(IsMember(e, A), IsMember(e, B)), IsMember(e, C), Not(IsMember(e, C)))
+
+print_consistency_analysis_result(s, "impossible union")
