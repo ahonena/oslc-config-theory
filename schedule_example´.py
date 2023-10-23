@@ -8,6 +8,23 @@ def print_consistency_analysis_result(s, case):
         print("Unsatisfiable theory: " + case)
         print("Unsat core: ", s.unsat_core())
         
+'''
+Scenario: Course Scheduling
+
+Imagine you are trying to schedule courses in a university. You have constraints on room availability, professors' availability, and some other restrictions. You model these constraints using Z3, and Z3 tells you the model is unsatisfiable (i.e., there's no valid schedule given the constraints). But which constraints are causing the issue? That's where unsat_core comes in.
+Constraints:
+
+    Room1 is available on Monday.
+    Room2 is available on Tuesday.
+    Professor A can teach on Monday.
+    Professor B can teach on Tuesday.
+    Course X is taught by Professor A in Room1.
+    Course Y is taught by Professor B in Room2.
+    Course Z is taught by Professor A in Room2.
+
+Now, there's a hypothetical additional constraint that introduces inconsistency:
+8. Course Z must also be taught on Monday (but we know from constraint 7 that Professor A teaches in Room2 on a different day).
+'''
 
 # Create a fresh context
 ctx = Context()
