@@ -1,2 +1,4 @@
-*.olean
-/lake-packages
+# only keep this file and smt2 files
+*
+!*.smt2
+!.gitignore
