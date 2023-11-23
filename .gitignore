@@ -1,4 +1,5 @@
-# only keep this file and smt2 files
 *
 !*.smt2
 !.gitignore
+!LICENSE
+!README.md
