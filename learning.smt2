@@ -44,17 +44,17 @@
 ; Function to check if a triple exists in the graph
 (declare-fun tripleExists ((Triple Iri Iri Iri)) Bool)
 
-
 (assert (= rdfType (mkIri "https://www.w3.org/TR/rdf12-schema/#ch_type")))
 (assert (= oslcVersionResource (mkIri "http://open-services.net/ns/config#VersionResource")))
 (assert (= oslcInstanceShape (mkIri "http://open-services.net/ns/core#instanceShape")))
 (assert (= myResourceShape (mkIri "http://example.org/ns#myResourceShape")))
-(assert (forall ((s Iri))
-    (=> (tripleExists (triple s rdfType oslcVersionResource))
-        (tripleExists (triple s oslcInstanceShape myResourceShape)))))
+(assert (forall ((s Iri) (p Iri) (o Iri))
+    (=> (and (= p rdfType) (= o oslcVersionResource))
+        (tripleExists (triple s p o)))))
 
 
 
+; cvc5 returns unknown for this, but z3 returns sat
 (check-sat)
 (get-value (myTestTriple))
 (get-value (myTestTriple_object))
